@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>همکار اربعین | راهنمای سلامت پیاده‌روی</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3ecdc;
+  --bg-soft:#eee3cb;
+  --paper:#fffaf0;
+  --ink:#2b241b;
+  --ink-soft:#5c5140;
+  --green-deep:#1f3a34;
+  --green-mid:#2f5850;
+  --green-line: rgba(31,58,52,0.14);
+  --maroon:#8c2a34;
+  --maroon-soft:#a8434d;
+  --gold:#b8863b;
+  --gold-light:#d9b96c;
+  --gold-glow: rgba(184,134,59,0.18);
+  --shadow: 0 10px 30px rgba(43,36,27,0.10);
+  --radius: 16px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 700px at 85% -10%, rgba(184,134,59,0.10), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(31,58,52,0.10), transparent 60%),
+    var(--bg);
+  color:var(--ink);
+  font-family:'Vazirmatn', sans-serif;
+  min-height:100vh;
+}
+::selection{ background: var(--gold-glow); }
+
+/* ---------- Layout ---------- */
+.app{
+  display:grid;
+  grid-template-columns: 300px 1fr;
+  min-height:100vh;
+}
+@media (max-width: 880px){
+  .app{ grid-template-columns: 1fr; }
+  .sidebar{ position:fixed; inset:0 0 0 auto; width:82vw; max-width:320px; z-index:50;
+    transform: translateX(100%); transition: transform .35s ease; }
+  .sidebar.open{ transform: translateX(0); }
+  .scrim{ display:none; position:fixed; inset:0; background:rgba(20,16,10,.45); z-index:40; }
+  .scrim.show{ display:block; }
+  .menu-btn{ display:flex !important; }
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  background: linear-gradient(180deg, var(--green-deep), #16302b 65%, #12241f);
+  color:#f2ead8;
+  padding:26px 20px 20px;
+  display:flex; flex-direction:column;
+  border-left: 1px solid rgba(217,185,108,0.18);
+}
+.brand{
+  display:flex; align-items:center; gap:12px;
+  padding-bottom:18px;
+  margin-bottom:18px;
+  border-bottom: 1px solid rgba(217,185,108,0.22);
+}
+.brand svg{ width:42px; height:42px; flex:none; }
+.brand-text h1{
+  font-size:1.05rem; margin:0 0 2px; font-weight:800; letter-spacing:.3px;
+  color:#f6efdc;
+}
+.brand-text p{ margin:0; font-size:.72rem; color:#c9d6cf; opacity:.85; }
+
+.progress-mini{
+  background: rgba(255,255,255,0.06);
+  border:1px solid rgba(217,185,108,0.18);
+  border-radius:12px; padding:12px 14px; margin-bottom:18px;
+}
+.progress-mini .label{ display:flex; justify-content:space-between; font-size:.72rem; color:#d8e3dc; margin-bottom:8px;}
+.progress-mini .track{ height:7px; border-radius:6px; background:rgba(255,255,255,0.12); overflow:hidden;}
+.progress-mini .fill{ height:100%; background:linear-gradient(90deg, var(--gold-light), var(--gold)); width:0%; transition:width .5s ease;}
+
+nav.menu{ display:flex; flex-direction:column; gap:4px; flex:1; overflow-y:auto; }
+.nav-btn{
+  display:flex; align-items:center; gap:12px;
+  background:transparent; border:none; cursor:pointer;
+  color:#e8e1cf; text-align:right; width:100%;
+  padding:11px 12px; border-radius:11px;
+  font-family:inherit; font-size:.9rem; font-weight:500;
+  transition: background .2s ease, color .2s ease, transform .15s ease;
+}
+.nav-btn .ic{ width:19px; height:19px; flex:none; opacity:.85; }
+.nav-btn:hover{ background:rgba(255,255,255,0.07); }
+.nav-btn.active{
+  background: linear-gradient(90deg, rgba(184,134,59,0.28), rgba(184,134,59,0.08));
+  color:#fff; font-weight:700;
+  box-shadow: inset 3px 0 0 var(--gold-light);
+}
+.sidebar-foot{
+  margin-top:16px; padding-top:14px; border-top:1px solid rgba(217,185,108,0.18);
+  font-size:.68rem; color:#a9b8b0; line-height:1.9;
+}
+
+/* ---------- Main ---------- */
+main{ padding:26px 34px 60px; max-width:980px; }
+@media (max-width:600px){ main{ padding:18px 16px 50px; } }
+
+.topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; gap:12px;}
+.menu-btn{
+  display:none; align-items:center; justify-content:center;
+  width:42px; height:42px; border-radius:10px; border:1px solid var(--green-line);
+  background:var(--paper); cursor:pointer; flex:none;
+}
+.menu-btn span, .menu-btn::before, .menu-btn::after{ content:''; display:block; width:18px; height:2px; background:var(--green-deep); border-radius:2px; }
+.menu-btn{ flex-direction:column; gap:4px; }
+
+.page-title{ display:none; }
+.page-title.show{ display:block; }
+.page-title h2{ font-size:1.6rem; margin:0 0 4px; font-weight:800; color:var(--green-deep); display:flex; align-items:center; gap:10px;}
+.page-title p.sub{ margin:0; color:var(--ink-soft); font-size:.92rem; }
+
+.arch-divider{ display:flex; align-items:center; gap:10px; margin:26px 0 16px; }
+.arch-divider svg{ width:22px; height:22px; flex:none; color:var(--gold); }
+.arch-divider .line{ flex:1; height:1px; background:linear-gradient(90deg, var(--gold-light), transparent); }
+.arch-divider span{ font-size:.78rem; color:var(--ink-soft); }
+
+/* section visibility */
+.page{ display:none; animation: fadeIn .35s ease; }
+.page.active{ display:block; }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+/* ---------- Cards ---------- */
+.card{
+  background:var(--paper);
+  border:1px solid var(--green-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding:20px 22px;
+}
+.grid{ display:grid; gap:16px; }
+.grid.cols-2{ grid-template-columns:1fr 1fr; }
+.grid.cols-3{ grid-template-columns:repeat(3,1fr); }
+@media (max-width:760px){ .grid.cols-2, .grid.cols-3{ grid-template-columns:1fr; } }
+
+/* Home */
+.hero{
+  background:
+    radial-gradient(600px 260px at 100% 0%, rgba(217,185,108,0.25), transparent 60%),
+    linear-gradient(135deg, var(--green-deep), var(--green-mid));
+  color:#f7f1e0;
+  border-radius:20px;
+  padding:34px 30px;
+  position:relative;
+  overflow:hidden;
+  margin-bottom:24px;
+}
+.hero::after{
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 14px);
+  pointer-events:none;
+}
+.hero h2{ margin:0 0 10px; font-size:1.7rem; font-weight:800; }
+.hero p{ margin:0 0 18px; color:#dbe6de; max-width:560px; line-height:1.9; font-size:.95rem;}
+.hero-stats{ display:flex; gap:14px; flex-wrap:wrap; }
+.hero-stat{
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16);
+  border-radius:12px; padding:10px 16px; min-width:120px;
+}
+.hero-stat b{ display:block; font-size:1.2rem; color:var(--gold-light); }
+.hero-stat span{ font-size:.72rem; color:#d8e3dc; }
+
+.quick-card{
+  cursor:pointer; border-radius:16px; padding:18px;
+  background:var(--paper); border:1px solid var(--green-line); box-shadow:var(--shadow);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  display:flex; flex-direction:column; gap:8px; text-align:right;
+}
+.quick-card:hover{ transform:translateY(-4px); border-color:var(--gold-light); box-shadow:0 16px 34px rgba(43,36,27,0.14); }
+.quick-card .qi{ width:36px; height:36px; color:var(--maroon); }
+.quick-card h3{ margin:0; font-size:1rem; color:var(--green-deep); }
+.quick-card p{ margin:0; font-size:.8rem; color:var(--ink-soft); line-height:1.7; }
+
+/* ---------- Checklist ---------- */
+.checklist-header{ display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:8px;}
+.big-progress{ display:flex; align-items:center; gap:12px; }
+.ring{ width:56px; height:56px; position:relative; flex:none; }
+.ring svg{ transform:rotate(-90deg); }
+.ring circle{ fill:none; stroke-width:6; }
+.ring .bg{ stroke: var(--bg-soft); }
+.ring .fg{ stroke: var(--maroon); stroke-linecap:round; transition: stroke-dashoffset .5s ease; }
+.ring-label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:800; color:var(--green-deep); }
+
+.reset-btn{
+  border:1px solid var(--green-line); background:var(--paper); color:var(--ink-soft);
+  padding:8px 14px; border-radius:10px; font-family:inherit; font-size:.78rem; cursor:pointer;
+}
+.reset-btn:hover{ border-color:var(--maroon); color:var(--maroon); }
+
+.checklist-group{ margin-top:22px; }
+.checklist-group h3{
+  display:flex; align-items:center; gap:8px;
+  font-size:.98rem; color:var(--green-deep); margin:0 0 12px;
+}
+.checklist-group h3 .dot{ width:8px; height:8px; border-radius:50%; background:var(--gold); flex:none; }
+.check-items{ display:flex; flex-direction:column; gap:8px; }
+.check-item{
+  display:flex; align-items:flex-start; gap:12px;
+  background:var(--paper); border:1px solid var(--green-line); border-radius:12px;
+  padding:12px 14px; cursor:pointer; transition: background .18s ease, border-color .18s ease;
+}
+.check-item:hover{ border-color:var(--gold-light); }
+.check-item.checked{ background: #f4f0e2; border-color: var(--gold); }
+.check-item.checked .txt{ text-decoration: line-through; color:var(--ink-soft); }
+.checkbox{
+  width:21px; height:21px; border-radius:6px; border:2px solid var(--green-mid); flex:none; margin-top:1px;
+  display:flex; align-items:center; justify-content:center; background:#fff;
+  transition: background .18s ease, border-color .18s ease;
+}
+.check-item.checked .checkbox{ background: var(--maroon); border-color: var(--maroon); }
+.checkbox svg{ width:13px; height:13px; opacity:0; transform:scale(.6); transition:opacity .15s ease, transform .15s ease; color:#fff; }
+.check-item.checked .checkbox svg{ opacity:1; transform:scale(1); }
+.check-item .txt{ font-size:.87rem; line-height:1.7; }
+
+/* ---------- Walking guide ---------- */
+.step-card{ display:flex; gap:16px; align-items:flex-start; padding:16px 0; border-bottom:1px dashed var(--green-line); }
+.step-card:last-child{ border-bottom:none; }
+.step-ic{
+  width:44px; height:44px; border-radius:12px; background:var(--bg-soft); color:var(--green-deep);
+  display:flex; align-items:center; justify-content:center; flex:none;
+}
+.step-ic svg{ width:22px; height:22px; }
+.step-body h4{ margin:0 0 4px; font-size:.95rem; color:var(--green-deep); }
+.step-body p{ margin:0; font-size:.85rem; color:var(--ink-soft); line-height:1.85; }
+
+.tip-box{
+  background: linear-gradient(135deg, rgba(140,42,52,0.06), rgba(140,42,52,0.02));
+  border:1px solid rgba(140,42,52,0.18);
+  border-radius:14px; padding:16px 18px; margin-top:18px;
+  display:flex; gap:12px; align-items:flex-start;
+}
+.tip-box svg{ width:22px; height:22px; color:var(--maroon); flex:none; margin-top:2px;}
+.tip-box p{ margin:0; font-size:.85rem; line-height:1.8; color:var(--ink); }
+
+/* ---------- Food tool ---------- */
+.symptom-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-top:14px; }
+.symptom-btn{
+  background:var(--paper); border:1.5px solid var(--green-line); border-radius:14px;
+  padding:16px 10px; text-align:center; cursor:pointer; font-family:inherit;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  transition: all .18s ease;
+}
+.symptom-btn .em{ font-size:1.6rem; }
+.symptom-btn span{ font-size:.8rem; color:var(--ink); font-weight:600; }
+.symptom-btn:hover{ border-color:var(--gold-light); transform:translateY(-3px); }
+.symptom-btn.active{ background: var(--green-deep); border-color:var(--green-deep); }
+.symptom-btn.active span{ color:#fff; }
+.symptom-btn.active .em{ filter: drop-shadow(0 0 4px rgba(217,185,108,.6)); }
+
+.result-panel{ margin-top:22px; display:none; }
+.result-panel.show{ display:block; animation: fadeIn .3s ease; }
+.result-panel .card{ border-color: var(--gold-light); }
+.result-head{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.result-head .em{ font-size:1.7rem; }
+.result-head h3{ margin:0; color:var(--green-deep); font-size:1.15rem; }
+.result-cols{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+@media (max-width:640px){ .result-cols{ grid-template-columns:1fr; } }
+.result-col h4{
+  display:flex; align-items:center; gap:6px; font-size:.85rem; margin:0 0 10px;
+}
+.result-col.good h4{ color:var(--green-deep); }
+.result-col.bad h4{ color:var(--maroon); }
+.result-col ul{ margin:0; padding-right:18px; display:flex; flex-direction:column; gap:7px; }
+.result-col li{ font-size:.85rem; line-height:1.7; color:var(--ink); }
+.result-note{
+  margin-top:16px; padding:12px 14px; border-radius:10px; background:var(--bg-soft);
+  font-size:.8rem; color:var(--ink-soft); line-height:1.8;
+}
+
+/* ---------- Disease explorer ---------- */
+.filter-row{ display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 20px; }
+.chip{
+  border:1.5px solid var(--green-line); background:var(--paper); color:var(--ink-soft);
+  padding:7px 15px; border-radius:999px; font-family:inherit; font-size:.8rem; cursor:pointer;
+  transition: all .15s ease;
+}
+.chip.active{ background:var(--maroon); border-color:var(--maroon); color:#fff; }
+.search-box{
+  display:flex; align-items:center; gap:8px; background:var(--paper); border:1.5px solid var(--green-line);
+  border-radius:12px; padding:10px 14px; margin-bottom:16px;
+}
+.search-box svg{ width:18px; height:18px; color:var(--ink-soft); flex:none; }
+.search-box input{
+  border:none; outline:none; background:transparent; font-family:inherit; font-size:.88rem; width:100%; color:var(--ink);
+}
+.disease-list{ display:flex; flex-direction:column; gap:12px; }
+.disease-card{
+  background:var(--paper); border:1px solid var(--green-line); border-radius:14px; overflow:hidden;
+}
+.disease-head{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:15px 18px; cursor:pointer; user-select:none;
+}
+.disease-head-l{ display:flex; align-items:center; gap:12px; }
+.tag{
+  font-size:.68rem; padding:3px 10px; border-radius:999px; background:var(--bg-soft); color:var(--green-deep); font-weight:700;
+  flex:none;
+}
+.disease-head h4{ margin:0; font-size:.92rem; color:var(--ink); }
+.chev{ width:16px; height:16px; color:var(--ink-soft); transition: transform .2s ease; flex:none; }
+.disease-card.open .chev{ transform:rotate(180deg); }
+.disease-body{ max-height:0; overflow:hidden; transition: max-height .3s ease; }
+.disease-card.open .disease-body{ max-height:600px; }
+.disease-body-in{ padding:0 18px 18px; display:grid; gap:14px; grid-template-columns:1fr 1fr; }
+@media (max-width:640px){ .disease-body-in{ grid-template-columns:1fr; } }
+.disease-body-in .blk h5{ margin:0 0 8px; font-size:.78rem; color:var(--maroon); display:flex; align-items:center; gap:6px;}
+.disease-body-in .blk ul{ margin:0; padding-right:16px; display:flex; flex-direction:column; gap:6px; }
+.disease-body-in .blk li{ font-size:.82rem; line-height:1.7; color:var(--ink-soft); }
+.no-results{ text-align:center; padding:40px 10px; color:var(--ink-soft); font-size:.88rem; }
+
+/* ---------- Special groups tabs ---------- */
+.tabbar{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.tabbtn{
+  border:1.5px solid var(--green-line); background:var(--paper); padding:9px 18px; border-radius:11px;
+  font-family:inherit; font-size:.85rem; cursor:pointer; color:var(--ink-soft); display:flex; align-items:center; gap:7px;
+}
+.tabbtn.active{ background:var(--green-deep); border-color:var(--green-deep); color:#fff; }
+.subpage{ display:none; }
+.subpage.active{ display:block; animation:fadeIn .3s ease; }
+.list-simple{ margin:0; padding-right:20px; display:flex; flex-direction:column; gap:10px; }
+.list-simple li{ font-size:.88rem; line-height:1.85; color:var(--ink); }
+
+/* Alert badge for at-risk groups */
+.alert-banner{
+  background: linear-gradient(135deg, rgba(140,42,52,0.09), rgba(140,42,52,0.03));
+  border:1px solid rgba(140,42,52,0.25); border-radius:12px; padding:13px 16px; margin-bottom:18px;
+  font-size:.83rem; color:var(--maroon); display:flex; gap:10px; align-items:flex-start; line-height:1.8;
+}
+.alert-banner svg{ width:20px; height:20px; flex:none; margin-top:1px;}
+
+/* recipe pill list */
+.pill-list{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.pill{ background:var(--bg-soft); color:var(--green-deep); font-size:.78rem; padding:6px 13px; border-radius:999px; }
+
+footer.appfoot{ text-align:center; color:var(--ink-soft); font-size:.72rem; margin-top:40px; line-height:2; }
+</style>
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M24 4C24 4 15 12 15 22C15 28 19 30 19 34V40H29V34C29 30 33 28 33 22C33 12 24 4 24 4Z" fill="url(#g1)"/>
+        <circle cx="24" cy="14" r="2" fill="#f3ecdc"/>
+        <defs><linearGradient id="g1" x1="15" y1="4" x2="33" y2="40" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#d9b96c"/><stop offset="1" stop-color="#8c2a34"/>
+        </linearGradient></defs>
+      </svg>
+      <div class="brand-text">
+        <h1>همکار اربعین</h1>
+        <p>راهنمای سلامت پیاده‌روی زیارتی</p>
+      </div>
+    </div>
+
+    <div class="progress-mini">
+      <div class="label"><span>آمادگی سفر شما</span><span id="miniPct">۰٪</span></div>
+      <div class="track"><div class="fill" id="miniFill"></div></div>
+    </div>
+
+    <nav class="menu" id="menu">
+      <button class="nav-btn active" data-page="home">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        خانه
+      </button>
+      <button class="nav-btn" data-page="checklist">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h13v17H4z"/><path d="M8 9h6M8 13h6M8 17h3"/></svg>
+        چک‌لیست وسایل
+      </button>
+      <button class="nav-btn" data-page="walking">
+        راه رفتن صحیح
+      </button>
+      <button class="nav-btn" data-page="food">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3v7a3 3 0 003 3v8M4 3v7M7 3v7M17 3c-2 1-3 3-3 6v12"/></svg>
+        چه بخورم؟
+      </button>
+      <button class="nav-btn" data-page="disease">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2 5h5l-4 4 2 6-5-3-5 3 2-6-4-4h5z"/></svg>
+        بیماری‌ها و راهکار
+      </button>
+      <button class="nav-btn" data-page="groups">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c0-4 3-6 6-6s6 2 6 6M14 20c0-3 2-5 5-5s4 2 4 5"/></svg>
+        گروه‌های خاص
+      </button>
+      <button class="nav-btn" data-page="mokeb">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
+        موکب‌داران
+      </button>
+      <button class="nav-btn" data-page="spirit">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-3 7-6.5 7-11a7 7 0 10-14 0c0 4.5 3 8 7 11z"/></svg>
+        سلامت معنوی
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      برگرفته از «زیارت به سلامت!» — دکتر ناصر رضایی‌پور<br>
+      طب ایرانی و آموزه‌های نوین سلامت
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="باز کردن منو"><span></span></button>
+      <div></div>
+    </div>
+
+    <!-- ---------------- HOME ---------------- -->
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <h2>زیارت به سلامت، بازگشت به سلامت</h2>
+        <p>این راهنمای تعاملی، خلاصه‌ای کاربردی از توصیه‌های طب ایرانی و سلامت نوین برای پیاده‌روی اربعین است؛ تا هم زیارت کنید، هم مراقب جسم و جانتان باشید.</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><b>۸</b><span>بخش راهنما</span></div>
+          <div class="hero-stat"><b>۲۰+</b><span>مشکل و راهکار سلامتی</span></div>
+          <div class="hero-stat"><b>۱۱</b><span>علامت در ابزار «چه بخورم؟»</span></div>
+        </div>
+      </div>
+
+      <div class="arch-divider">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 5 7 5 11v9h14v-9c0-4-2-9-7-9z"/></svg>
+        <div class="line"></div><span>دسترسی سریع</span>
+      </div>
+
+      <div class="grid cols-3">
+        <div class="quick-card" data-goto="checklist">
+          <svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h13v17H4z"/><path d="M8 9h6M8 13h6"/></svg>
+          <h3>چک‌لیست وسایل</h3>
+          <p>پیش از حرکت، وسایل و داروهای ضروری‌تان را تیک بزنید تا چیزی جا نماند.</p>
+        </div>
+        <div class="quick-card" data-goto="food">
+          <svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 3v7a3 3 0 003 3v8M4 3v7M7 3v7M17 3c-2 1-3 3-3 6v12"/></svg>
+          <h3>چه بخورم؟</h3>
+          <p>علامتتان (تشنگی، اسهال، یبوست و...) را انتخاب کنید تا خوراکی مناسب پیشنهاد شود.</p>
+        </div>
+        <div class="quick-card" data-goto="disease">
+          <svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l2 5h5l-4 4 2 6-5-3-5 3 2-6-4-4h5z"/></svg>
+          <h3>بیماری‌ها و راهکار</h3>
+          <p>از گرمازدگی تا تاول پا؛ علت و درمان ساده هر مشکل رایج سفر را جست‌وجو کنید.</p>
+        </div>
+        <div class="quick-card" data-goto="walking">
+          <h3>راه رفتن صحیح</h3>
+          <p>روش درست راه‌رفتن و نرمش‌های ساده برای پیشگیری از خستگی و آسیب.</p>
+        </div>
+        <div class="quick-card" data-goto="groups">
+          <svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/></svg>
+          <h3>گروه‌های خاص</h3>
+          <p>تدابیر ویژه سالمندان، کودکان و بانوان باردار برای این سفر.</p>
+        </div>
+        <div class="quick-card" data-goto="spirit">
+          <svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c4-3 7-6.5 7-11a7 7 0 10-14 0c0 4.5 3 8 7 11z"/></svg>
+          <h3>سلامت معنوی</h3>
+          <p>دل و دماغ سالک؛ توشه‌ای برای آرامش در مسیر.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- CHECKLIST ---------------- -->
+    <section class="page" id="page-checklist">
+      <div class="page-title show"><h2>🎒 چک‌لیست وسایل و تجهیزات</h2><p class="sub">هر آیتم را که آماده کردید، تیک بزنید. پیشرفتتان به‌صورت خودکار ذخیره می‌شود.</p></div>
+
+      <div class="card">
+        <div class="checklist-header">
+          <div class="big-progress">
+            <div class="ring">
+              <svg width="56" height="56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fg" id="ringFg" cx="28" cy="28" r="24" stroke-dasharray="151" stroke-dashoffset="151"/></svg>
+              <div class="ring-label" id="ringLabel">۰٪</div>
+            </div>
+            <div>
+              <div style="font-weight:700;color:var(--green-deep);font-size:.95rem;" id="doneCount">۰ از ۰ آیتم آماده</div>
+              <div style="font-size:.78rem;color:var(--ink-soft);">وضعیت آمادگی کوله شما</div>
+            </div>
+          </div>
+          <button class="reset-btn" id="resetChecklist">پاک‌کردن همه تیک‌ها</button>
+        </div>
+      </div>
+
+      <div id="checklistWrap"></div>
+    </section>
+
+    <!-- ---------------- WALKING ---------------- -->
+    <section class="page" id="page-walking">
+      <div class="page-title show"><h2>🚶 راهنمای راه رفتن صحیح</h2><p class="sub">روش درست راه‌رفتن، وزن بدن را بین دو پا بهتر تقسیم کرده و از خستگی زودرس جلوگیری می‌کند.</p></div>
+
+      <div class="card">
+        <div class="step-card">
+          <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M6 8h12M6 16h12"/></svg></div>
+          <div class="step-body"><h4>حالت بدن را صاف نگه دارید</h4><p>پشت صاف، شکم جمع‌شده به داخل؛ دست‌ها را در جهت مخالف هم، به‌آرامی جلو و عقب حرکت دهید. شکم را جلو ندهید تا وزن کوله روی کمر نیفتد.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16M4 12l4-4M4 12l4 4"/></svg></div>
+          <div class="step-body"><h4>شانه‌ها را شل و عقب نگه دارید</h4><p>در این حالت کمر راست و چانه بالا می‌ماند، فشار روی دیافراگم کم می‌شود و تنفس بهتری خواهید داشت.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <div class="step-body"><h4>پاشنه اول، پنجه دوم</h4><p>هنگام برداشتن قدم، ابتدا پاشنهٔ پای عقب از زمین جدا می‌شود و سپس پنجه؛ برای پای جلو هم اول پاشنه و بعد پنجه زمین را لمس می‌کند.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+          <div class="step-body"><h4>روزهای اول را آرام شروع کنید</h4><p>چند روز اول با عجله و مسافت زیاد راه نروید. سرعت را کم‌کم افزایش دهید؛ شتاب زیاد در ابتدا باعث گرفتگی عضلانی می‌شود.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
+          <div class="step-body"><h4>در گرمای ظهر آهسته‌تر بروید</h4><p>در میانهٔ روز که آفتاب شدیدتر است، سرعت را کاهش دهید. بخش اصلی مسیر را بین صبح تا پیش‌ازظهر و عصر تا شب طی کنید.</p></div>
+        </div>
+        <div class="step-card">
+          <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="step-body"><h4>هر ۱ تا ۱.۵ ساعت استراحت کنید</h4><p>حدود ۱۰ تا ۱۵ دقیقه استراحت کافی است. بعد از ناهار هم یک ساعت به بدن فرصت دهید و نزدیک غروب پیاده‌روی را متوقف کنید.</p></div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>
+        <p><b>کفش و عصا:</b> کفش ورزشی سبک با پاشنهٔ ۲ تا ۳ سانتی‌متر بلندتر از جلو انتخاب کنید. اگر ضعف زانو یا ران دارید، از عصای پیاده‌روی با ارتفاع هم‌سطح مچ دست کمک بگیرید تا فشار کمتری به زانوها وارد شود.</p>
+      </div>
+    </section>
+
+    <!-- ---------------- FOOD TOOL ---------------- -->
+    <section class="page" id="page-food">
+      <div class="page-title show"><h2>🍵 چه بخورم؟</h2><p class="sub">علامتی را که این لحظه دارید انتخاب کنید تا خوراکی و نوشیدنی مناسب طب ایرانی پیشنهاد شود.</p></div>
+
+      <div class="card">
+        <div class="symptom-grid" id="symptomGrid"></div>
+      </div>
+
+      <div class="result-panel" id="resultPanel"></div>
+    </section>
+
+    <!-- ---------------- DISEASE EXPLORER ---------------- -->
+    <section class="page" id="page-disease">
+      <div class="page-title show"><h2>🩺 بیماری‌ها و راهکارها</h2><p class="sub">روی هر مورد بزنید تا علت و راهکار آن باز شود؛ می‌توانید جست‌وجو یا فیلتر هم بکنید.</p></div>
+
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="diseaseSearch" placeholder="جست‌وجو کنید... مثلاً «تاول» یا «سردرد»">
+      </div>
+      <div class="filter-row" id="filterRow"></div>
+      <div class="disease-list" id="diseaseList"></div>
+    </section>
+
+    <!-- ---------------- SPECIAL GROUPS ---------------- -->
+    <section class="page" id="page-groups">
+      <div class="page-title show"><h2>👪 گروه‌های خاص</h2><p class="sub">تدابیر ویژهٔ سالمندان، کودکان و بانوان باردار برای پیاده‌روی اربعین.</p></div>
+
+      <div class="tabbar" id="groupTabs">
+        <button class="tabbtn active" data-sub="elder">🧓 سالمندان</button>
+        <button class="tabbtn" data-sub="child">🧒 کودکان</button>
+        <button class="tabbtn" data-sub="preg">🤰 بانوان باردار</button>
+      </div>
+
+      <div class="subpage active" id="sub-elder">
+        <div class="alert-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          با توجه به گرمای هوا و احتمال شیوع بیماری‌های ویروسی، بهتر است سالمندان آسیب‌پذیر امسال به سفر مشرف نشوند؛ در صورت حضور، نکات زیر را جدی بگیرید.
+        </div>
+        <div class="card">
+          <ul class="list-simple">
+            <li>در استفاده از امکانات رفاهی، حق تقدم با سالمندان باشد.</li>
+            <li>پیاده‌روی باید معتدل باشد؛ فشار زیاد در حرکات بدنی برایشان خطرناک است.</li>
+            <li>حتماً مایعات کافی (مثل شربت لیمو) بنوشند؛ کم‌آبی برای سالمندان خطرناک‌تر است.</li>
+            <li>پیش از حرکت و در زمان استراحت، بدن و اندام‌ها را با روغن بنفشه‌بادام ماساژ دهید.</li>
+            <li>وعده‌های غذایی را کوچک‌تر ولی بیشتر کنید و از غذاهای زودهضم و خوب‌پخته استفاده شود.</li>
+            <li>گرسنه‌ماندن طولانی، به‌ویژه شب گرسنه خوابیدن، برایشان مضر است.</li>
+            <li>بیشتر از آش و سوپ سبک و کمتر از غذای شور، تند و ترش استفاده کنند.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subpage" id="sub-child">
+        <div class="alert-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          به‌دلیل پایین‌تر بودن سطح ایمنی کودکان و گرمای هوا، بهتر است کودکان به این سفر مشرف نشوند؛ در صورت همراهی، این نکات را رعایت کنید.
+        </div>
+        <div class="card">
+          <ul class="list-simple">
+            <li>کودک را در محیط گرم هرگز تنها رها نکنید؛ کم‌آبی در کودکان بسیار خطرناک است.</li>
+            <li>کودکان شیرخوار تا جای ممکن از شیر مادر استفاده کنند.</li>
+            <li>لباس روشن، نخی و غیرچسبان بپوشانید و او را از غبار، آفتاب مستقیم و سرما دور نگه دارید.</li>
+            <li>به نظافت دست‌ها، پستانک و سرشیشه توجه ویژه شود.</li>
+            <li>از تنقلات پرنمک و تند (چیپس، پفک) بپرهیزید؛ به‌جای آن لواشک آلو، تخم‌مرغ آب‌پز، گلابی و انجیر بدهید.</li>
+            <li>کرم دافع حشرات، پمادهای ضدعرق‌سوز و ضدآفتاب مخصوص کودک همراه داشته باشید.</li>
+            <li>بی‌حالی زیاد، بی‌قراری، گریهٔ شدید یا بی‌اشتهایی ناگهانی را جدی بگیرید و پزشک ببینید.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subpage" id="sub-preg">
+        <div class="alert-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          با توجه به گرمای هوا، توصیه می‌شود بانوان باردار به این سفر مشرف نشوند. در صورت حضور، این تدابیر ضروری‌اند.
+        </div>
+        <div class="card">
+          <ul class="list-simple">
+            <li>فعالیت شدید و پیاده‌روی طولانی ممنوع است؛ استراحت کافی و دوری از شرایط ناراحت‌کننده ضروری است.</li>
+            <li>گرسنگی و تشنگی طولانی به‌صلاح نیست؛ غذا را در حجم کم و به دفعات بیشتر میل کنید.</li>
+            <li>از خوراکی‌های شور، تند، مانده، دیرهضم و سنگین و از نوشیدن آب یخ پرهیز شود.</li>
+            <li>سیب، انار، گلابی، به و انجیر (تازه یا خشک) خوراکی‌های مناسبی هستند.</li>
+            <li>مصرف اغلب گیاهان دارویی در بارداری ممنوع یا نیازمند احتیاط است — به‌ویژه نعنا، گل‌گاوزبان، اسطوخودوس، بابونه، مرزنجوش، آویشن، زوفا، ختمی، پنیرک، خاکشیر و شیرین‌بیان.</li>
+            <li>در بروز هر علامت تازه مانند درد، تب، استفراغ، لکه‌بینی یا خونریزی، حتماً بی‌درنگ به پزشک مراجعه کنید.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- MOKEB ---------------- -->
+    <section class="page" id="page-mokeb">
+      <div class="page-title show"><h2>⛺ توصیه‌هایی به موکب‌داران</h2><p class="sub">غذای سبک و درست، بزرگ‌ترین خدمت به سلامت زائران خسته است.</p></div>
+
+      <div class="card">
+        <h3 style="margin-top:0;color:var(--green-deep);">غذای سنگین ممنوع!</h3>
+        <p style="color:var(--ink-soft);font-size:.88rem;line-height:1.9;">در گرمای تابستان، دستگاه گوارش ضعیف‌تر می‌شود. غذاهای سنگین مثل آش‌رشته، آبگوشت، هلیم و فسنجان برای این فصل مناسب نیستند. در عوض، خورش‌های سبک ایرانی هم هضم آسان‌تری دارند و هم به‌خاطر فیبر بالا، مدت بیشتری زائر را سیر نگه می‌دارند و از یبوست هم جلوگیری می‌کنند.</p>
+        <div class="pill-list">
+          <span class="pill">سوپ جو</span><span class="pill">آش انار / آلو / دوغ</span><span class="pill">خورش کدو و بامیه</span>
+          <span class="pill">خورش کرفس و آلو</span><span class="pill">ماش‌پلو</span><span class="pill">زرشک‌پلو</span>
+          <span class="pill">فرنی و شیربرنج</span><span class="pill">فالودهٔ سیب</span><span class="pill">حلوای هویج</span>
+          <span class="pill">شیربادام و حریرهٔ بادام</span><span class="pill">دمنوش گل‌محمدی و به</span>
+        </div>
+      </div>
+
+      <div class="arch-divider"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 5 7 5 11v9h14v-9c0-4-2-9-7-9z"/></svg><div class="line"></div><span>دستور تهیه دو نوشیدنی پرکاربرد</span></div>
+
+      <div class="grid cols-2">
+        <div class="card">
+          <h4 style="margin-top:0;color:var(--maroon);">سکنجبین ساده</h4>
+          <p style="font-size:.85rem;color:var(--ink-soft);line-height:1.9;">۴۰ کیلو شکر را با ۱۰۰ لیتر آب آرام بجوشانید تا نیم آن بخار شود. از روی شعله بردارید و حدود ۸ لیتر سرکهٔ انگوری طبیعی اضافه کنید و چند ساعت (مثلاً شب تا صبح) بگذارید بماند.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin-top:0;color:var(--maroon);">ماءالشعیر طبی</h4>
+          <p style="font-size:.85rem;color:var(--ink-soft);line-height:1.9;">۵ کیلو جوی پوست‌کنده را با ۱۰۰ لیتر آب، با حرارت ملایم، حدود ۴۰ تا ۵۰ دقیقه بجوشانید تا جوها کاملاً پخته شوند. صاف کنید و در جای خنک سرد کنید. حداکثر تا دو روز در یخچال قابل نگهداری است.</p>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>
+        <p>برای رعایت بهداشت محیط، از ظروف یک‌بارمصرف اضافی بپرهیزید و به زائران کیسهٔ زباله و لیوان/قاشق شخصی پیشنهاد دهید.</p>
+      </div>
+    </section>
+
+    <!-- ---------------- SPIRIT ---------------- -->
+    <section class="page" id="page-spirit">
+      <div class="page-title show"><h2>🕊 سلامت معنوی مسافر سالک</h2><p class="sub">معنویت، هستهٔ مرکزی وجود انسان و یک رکن مهم در سلامت کلی است.</p></div>
+
+      <div class="card">
+        <p style="color:var(--ink-soft);font-size:.9rem;line-height:2;">همان‌طور که غذا و آب برای سلامت جسم لازم است، عبادات و آرامش معنوی هم برای تعادل روح ضروری‌اند. سلامت معنوی فقط با عبادات فردی به‌دست نمی‌آید؛ مهرورزی، خوش‌خلقی و کمک به دیگر زائران هم بخشی از همین مسیرند.</p>
+        <div class="arch-divider"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 5 7 5 11v9h14v-9c0-4-2-9-7-9z"/></svg><div class="line"></div><span>راه‌های تقویت آرامش در مسیر</span></div>
+        <ul class="list-simple">
+          <li>احساس اطمینان و امید داشتن، به‌جای اضطراب دربارهٔ مسیر و سختی‌ها.</li>
+          <li>پایبندی به اخلاق و رفتار محترمانه با هم‌سفران و میزبانان.</li>
+          <li>انجام عبادات و زیارت‌نامه‌ها همراه با تأمل، نه فقط شتاب‌زده.</li>
+          <li>مثبت‌اندیشی و پرهیز از غرغر دربارهٔ گرما، ازدحام یا خستگی.</li>
+          <li>برقراری رابطهٔ خوب با هم‌سفران و کمک به سایر زائران در طول راه.</li>
+        </ul>
+      </div>
+
+      <div class="tip-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>
+        <p>پیش از حرکت، چند نوحه یا زیارت‌نامهٔ محبوبتان را در گوشی ذخیره کنید؛ گاهی همین همراهی صوتی، خستگی راه را سبک‌تر می‌کند.</p>
+      </div>
+    </section>
+
+    <footer class="appfoot">برگرفته از کتاب «زیارت به سلامت!» — توصیه‌های طب ایرانی برای پیاده‌روی اربعین · دکتر ناصر رضایی‌پور، ۱۴۰۱<br>معاونت امور بهداشتی دانشگاه علوم پزشکی کرمانشاه<br>طراحی و تدوین: سارا قاسمی کارشناس طب ایرانی<br>نظارت: آزاده بهرامی مقدم کارشناس طب ایرانی</footer>
+  </main>
+</div>
+
+<script>
+/* ============ Navigation ============ */
+const pages = document.querySelectorAll('.page');
+const navBtns = document.querySelectorAll('.nav-btn');
+const sidebar = document.getElementById('sidebar');
+const scrim = document.getElementById('scrim');
+const menuBtn = document.getElementById('menuBtn');
+
+function goPage(id){
+  pages.forEach(p=>p.classList.toggle('active', p.id === 'page-'+id));
+  navBtns.forEach(b=>b.classList.toggle('active', b.dataset.page === id));
+  sidebar.classList.remove('open'); scrim.classList.remove('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+navBtns.forEach(b=> b.addEventListener('click', ()=> goPage(b.dataset.page)));
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  el.addEventListener('click', ()=> goPage(el.dataset.goto));
+});
+menuBtn.addEventListener('click', ()=>{ sidebar.classList.add('open'); scrim.classList.add('show'); });
+scrim.addEventListener('click', ()=>{ sidebar.classList.remove('open'); scrim.classList.remove('show'); });
+
+/* ============ Checklist data ============ */
+const checklistData = [
+  { group: 'کفش و پوشاک', items: [
+    'کفش ورزشی سبک و راحت (نه نو، نه فرسوده)',
+    'جوراب کلفت و مناسب پیاده‌روی',
+    'کلاه لبه‌دار (حداقل ۷ سانتی‌متر)',
+    'عینک آفتابی',
+    'چفیه یا شال سفیدرنگ',
+    'لباس نخی، روشن و گشاد',
+  ]},
+  { group: 'وسایل حرکتی', items: [
+    'کوله‌پشتی مناسب اندام (نه خیلی سنگین)',
+    'عصای پیاده‌روی (در صورت ضعف زانو یا ران)',
+  ]},
+  { group: 'دارو و درمان', items: [
+    'داروهای شخصی همراه با نسخه',
+    'پنبه، باند و چسب زخم',
+    'ژل یا قطرهٔ موضعی برای درد دندان',
+    'ضدآفتاب مناسب',
+  ]},
+  { group: 'خوراکی و نوشیدنی همراه', items: [
+    'سیر، زنجبیل، انجیر، لیموترش، آلو',
+    'عسل، بابونه، آویشن، خاکشی',
+    'سکنجبین و روغن گل سرخ یا بنفشه‌بادام',
+    'توت خشک، کشمش، بادام، فندق، پسته',
+  ]},
+  { group: 'لوازم شخصی و بهداشتی', items: [
+    'لیوان دردار و قاشق شخصی',
+    'ماسک',
+    'دستمال کاغذی و پارچه‌ای',
+    'صابون یا ژل ضدعفونی‌کننده',
+  ]},
+];
+
+const STORAGE_KEY = 'arbaeen-checklist-v1';
+function loadChecked(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; } }
+function saveChecked(state){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+let checkedState = loadChecked();
+
+function renderChecklist(){
+  const wrap = document.getElementById('checklistWrap');
+  wrap.innerHTML = '';
+  checklistData.forEach((g, gi)=>{
+    const groupEl = document.createElement('div');
+    groupEl.className = 'checklist-group';
+    groupEl.innerHTML = `<h3><span class="dot"></span>${g.group}</h3>`;
+    const itemsEl = document.createElement('div');
+    itemsEl.className = 'check-items';
+    g.items.forEach((txt, ii)=>{
+      const key = gi+'-'+ii;
+      const isChecked = !!checkedState[key];
+      const item = document.createElement('div');
+      item.className = 'check-item' + (isChecked ? ' checked' : '');
+      item.innerHTML = `
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
+        <div class="txt">${txt}</div>`;
+      item.addEventListener('click', ()=>{
+        checkedState[key] = !checkedState[key];
+        saveChecked(checkedState);
+        item.classList.toggle('checked');
+        updateProgress();
+      });
+      itemsEl.appendChild(item);
+    });
+    groupEl.appendChild(itemsEl);
+    wrap.appendChild(groupEl);
+  });
+  updateProgress();
+}
+
+function totalItems(){ return checklistData.reduce((s,g)=>s+g.items.length,0); }
+function checkedCount(){ return Object.values(checkedState).filter(Boolean).length; }
+
+function updateProgress(){
+  const total = totalItems();
+  const done = checkedCount();
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('doneCount').textContent = `${toFa(done)} از ${toFa(total)} آیتم آماده`;
+  document.getElementById('ringLabel').textContent = toFa(pct)+'٪';
+  const circumference = 151;
+  document.getElementById('ringFg').style.strokeDashoffset = circumference - (circumference*pct/100);
+  document.getElementById('miniPct').textContent = toFa(pct)+'٪';
+  document.getElementById('miniFill').style.width = pct+'%';
+}
+document.getElementById('resetChecklist').addEventListener('click', ()=>{
+  if(confirm('همهٔ تیک‌ها پاک شود؟')){ checkedState = {}; saveChecked(checkedState); renderChecklist(); }
+});
+function toFa(n){ const f=['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹']; return String(n).split('').map(d=> f[d] ?? d).join(''); }
+
+renderChecklist();
+
+/* ============ Food tool ============ */
+const foodData = {
+  thirst: { em:'💧', label:'تشنگی و عطش شدید',
+    good:['شربت آبلیمو یا بیدمشک با گلاب','سکنجبین رقیق با آب خنک (نه یخ)','عرق کاسنی، شربت تخم ریحان یا آلبالو','دوغ کم‌نمک و کم‌چرب (بدون گاز)','خیار، سیب و گلاب برای بو کردن یا خوردن'],
+    bad:['خوراکی‌های چرب و سرخ‌کردنی','خرما، موز و انبهٔ زیاد','سیر و پیاز خام، بادنجان، کشک'],
+    note:'کمی سرکه یا سکنجبین به آب اضافه کنید تا ولع نوشیدن یک‌باره کم شود؛ آب را جرعه‌جرعه بنوشید.' },
+  diarrhea: { em:'🚻', label:'اسهال',
+    good:['سیب رنده‌شده (ترجیحاً کمی تفت‌داده)','چای سیاه یا سبز پررنگ با نبات یا عسل','شربت رقیق آبلیمو با کمی نمک و شکر','سماق روی برنج یا سیب‌زمینی آب‌پز','دمنوش یا رب به پیش از غذا'],
+    bad:['آب یخ و دوغ ترش','میوه‌های ملین مثل آلو و انجیر تازه (به‌جایش خشک‌شدهٔ آن‌ها را بخورید)','غذای مشکوک یا خیابانی'],
+    note:'اگر اسهال بیش از دو روز ادامه داشت یا با تب همراه شد، حتماً به پزشک مراجعه کنید.' },
+  constipation: { em:'🌰', label:'یبوست',
+    good:['۵ تا ۷ عدد انجیر خیسانده در آب، صبح ناشتا','آش و سوپ‌های پرسبزیجات با روغن زیتون','مویز و شربت خاکشیر با آب گرم','ترنجبین در شیر یا آب جوش، شب قبل خواب','ماساژ شکم در جهت عقربه‌های ساعت با روغن بابونه'],
+    bad:['غذاهای گرم‌وخشک و ادویه‌دار زیاد','ذرت، برنج ساده و چای پررنگ به مقدار زیاد','پرخوری و درهم‌خوری'],
+    note:'مصرف مایعات کافی و جویدن کامل غذا، سادگی و کلید اصلی پیشگیری از یبوست در سفر است.' },
+  heat: { em:'🥵', label:'گرمازدگی',
+    good:['شربت تخم ریحان، آلبالو یا سکنجبین شکری','عرق کاسنی و عناب','آلو، رب انار، ماست، کاهو و خیار','استحمام با آب ولرم و شستن صورت و پا با آب خنک'],
+    bad:['پیاده‌روی در آفتاب شدید و ساعات گرم روز','غذای سنگین، شور، تند و شیرینی غلیظ','لباس تیره یا نایلونی'],
+    note:'در ساعات گرم روز حتماً در سایه استراحت کنید و لباس گشاد و نخی روشن بپوشید.' },
+  fatigue: { em:'🦵', label:'خستگی و گرفتگی عضلانی',
+    good:['ماساژ ساق و کف پا با روغن بادام‌شیرین یا گل‌سرخ','برای درد و ورم زانو: روغن بابونه یا سیاه‌دانه','برای گرفتگی شدید: روغن شوید یا بابونه','استراحت با پاهای بالاتر از سطح بدن'],
+    bad:['ادامهٔ راه‌رفتن بدون استراحت با وجود درد','خوابیدن بدون ماساژ پیش از خواب'],
+    note:'ماساژ ملایم، پیش و پس از حرکت و پیش از خواب شب، بسیار در کاهش خستگی مؤثر است.' },
+  headache: { em:'🤕', label:'سردرد ناشی از گرما',
+    good:['بوییدن گلاب، خیار، سیب یا بنفشه','چرب‌کردن بینی و پیشانی با روغن گل‌سرخ','عرق بید یا بیدمشک، شربت عناب یا سکنجبین','استراحت در جای خنک و کم‌نور'],
+    bad:['ماندن طولانی در آفتاب','بوهای تند و گرم'],
+    note:'اگر سردرد شدید یا مداوم بود و با استراحت برطرف نشد، به پزشک مراجعه کنید.' },
+  lowappetite: { em:'🍽️', label:'بی‌اشتهایی و ضعف',
+    good:['شربت عسل و آبلیمو با کمی زعفران','دمنوش گاوزبان با آبلیمو','شربت تخم بالنگو یا تخم شربتی با گلاب','فالودهٔ سیب با گلاب و تخم خرفه'],
+    bad:['پرخوری ناگهانی بعد از بی‌اشتهایی','غذای سنگین و چرب'],
+    note:'وعده‌های کوچک و مکرر، بهتر از فشار آوردن برای یک وعدهٔ سنگین است.' },
+  coldhot: { em:'🤧', label:'سرماخوردگی با ترشح رقیق (نزلهٔ گرم)',
+    good:['سوپ جوی رقیق و بدون گوشت در چند روز اول','چای سیاه یا سبز با کمی لیموعمانی','مصرف کدو، باقلا، به و نخود سبز آب‌پز','شربت به‌دانه برای سرفهٔ خشک'],
+    bad:['ادویه‌های گرم مثل دارچین، زنجبیل و سیر و پیاز خام زیاد','عسل و غذای پرادویه در این حالت'],
+    note:'اگر ترشحات بسیار رقیق و همراه خارش چشم و گلو بود، از سوپ نیمه‌غلیظ با عدس و ماش کمک بگیرید.' },
+  coldcold: { em:'🥶', label:'سرماخوردگی با ترشح غلیظ (نزلهٔ سرد)',
+    good:['غذای گرم و سبک مثل سوپ گندم و جو با سبزیجات','دمنوش گل‌گاوزبان با لیموعمانی','بخور بابونه، آویشن، شوید و مرزنجوش','چای همراه با عسل و دارچین'],
+    bad:['نوشیدن آب سرد و یخ','خواب زیاد وسط روز و بعد از غذا و حمام'],
+    note:'اگر تب و بدن‌درد شدید یا چرک گلو داشتید، حتماً به پزشک مراجعه کنید؛ خودسرانه دارو مصرف نکنید.' },
+  nosebleed: { em:'🩸', label:'خون‌دماغ‌شدن',
+    good:['فشار ملایم به بینی تا بند آمدن خون','پنبهٔ آغشته به آب سبزی تره یا آبغوره در بینی (در صورت دسترسی)'],
+    bad:['خواباندن سر به عقب','ادامه دادن پیاده‌روی بدون کنترل خونریزی'],
+    note:'در صورت تشدید یا ادامهٔ خونریزی، حتماً به واحدهای پزشکی و اورژانس مراجعه کنید.' },
+  insomnia: { em:'🌙', label:'بی‌خوابی و بی‌قراری شب',
+    good:['یک لیوان شیربادام یا حریرهٔ بادام گرم','دمنوش بابونه یا گل‌محمدی قبل خواب','استراحت در جای خنک و کم‌سروصدا'],
+    bad:['چای پررنگ یا نوشیدنی‌های محرک نزدیک خواب','فکر و اضطراب دربارهٔ ادامهٔ مسیر هنگام خواب'],
+    note:'ماساژ ملایم پا پیش از خواب، هم خستگی جسمی و هم بی‌قراری را کاهش می‌دهد.' },
+};
+
+const symptomGrid = document.getElementById('symptomGrid');
+Object.entries(foodData).forEach(([key, d])=>{
+  const btn = document.createElement('button');
+  btn.className = 'symptom-btn';
+  btn.dataset.key = key;
+  btn.innerHTML = `<span class="em">${d.em}</span><span>${d.label}</span>`;
+  btn.addEventListener('click', ()=> showFoodResult(key));
+  symptomGrid.appendChild(btn);
+});
+
+function showFoodResult(key){
+  document.querySelectorAll('.symptom-btn').forEach(b=> b.classList.toggle('active', b.dataset.key===key));
+  const d = foodData[key];
+  const panel = document.getElementById('resultPanel');
+  panel.innerHTML = `
+    <div class="card">
+      <div class="result-head"><span class="em">${d.em}</span><h3>${d.label}</h3></div>
+      <div class="result-cols">
+        <div class="result-col good">
+          <h4>✅ توصیه می‌شود</h4>
+          <ul>${d.good.map(x=>`<li>${x}</li>`).join('')}</ul>
+        </div>
+        <div class="result-col bad">
+          <h4>🚫 بهتر است پرهیز کنید</h4>
+          <ul>${d.bad.map(x=>`<li>${x}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="result-note">💡 ${d.note}</div>
+    </div>`;
+  panel.classList.add('show');
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+/* ============ Disease explorer ============ */
+const diseaseData = [
+  { cat:'گوارشی', title:'یبوست', symptoms:'دفع سخت و کم، نفخ', solutions:['مصرف مایعات کافی و جویدن کامل غذا','۵ تا ۷ انجیر خیسانده صبح ناشتا','ماساژ شکم با روغن بابونه یا کرچک','آش و سوپ‌های پرسبزیجات'] },
+  { cat:'گوارشی', title:'اسهال و استفراغ', symptoms:'مدفوع شل، دل‌درد', solutions:['شست‌وشوی دست پیش از غذا','سیب رنده‌شده و چای پررنگ با نبات','شربت رقیق آبلیمو با نمک و شکر','در صورت تداوم بیش از چند روز، مراجعه به پزشک'] },
+  { cat:'گوارشی', title:'بی‌اشتهایی', symptoms:'میل نداشتن به غذا، ضعف', solutions:['شربت عسل و آبلیمو با زعفران','وعده‌های کوچک و مکرر','دمنوش گاوزبان'] },
+  { cat:'گوارشی', title:'نفخ و سنگینی معده', symptoms:'احساس پری، سنگینی', solutions:['پرهیز از پرخوری و درهم‌خوری','غذای سبک و کم‌ادویه','دمنوش نعنا (به‌جز بارداری)'] },
+  { cat:'محیطی', title:'گرمازدگی', symptoms:'گرمی بدن، سرگیجه، عطش شدید', solutions:['استراحت در سایه و لباس نخی گشاد','شربت تخم ریحان یا سکنجبین','شستن صورت و پا با آب خنک','پرهیز از آفتاب شدید ساعات ظهر'] },
+  { cat:'محیطی', title:'آفتاب‌سوختگی', symptoms:'قرمزی و سوزش پوست', solutions:['ضدآفتاب مناسب ۱۵ دقیقه پیش از خروج','روغن گل‌سرخ یا بادام‌شیرین بعد از سوختگی','کرم حاوی آلوئه‌ورا یا خیار'] },
+  { cat:'محیطی', title:'تشنگی و عطش', symptoms:'خشکی دهان، ولع نوشیدن', solutions:['سکنجبین رقیق و شربت آبلیمو','دوغ کم‌نمک و کم‌چرب','پرهیز از نوشیدن یک‌بارهٔ آب زیاد سرد'] },
+  { cat:'محیطی', title:'خون‌دماغ‌شدن', symptoms:'خونریزی بینی', solutions:['فشار ملایم به بینی تا بند آمدن','در تشدید، مراجعهٔ فوری به اورژانس'] },
+  { cat:'محیطی', title:'سردرد ناشی از گرما', symptoms:'درد سر، سنگینی', solutions:['استراحت در جای خنک','بوییدن گلاب یا سیب','چرب‌کردن پیشانی با روغن گل‌سرخ'] },
+  { cat:'پوستی', title:'تاول پا', symptoms:'درد و تاول کف پا', solutions:['کفش راحت و جوراب کلفت از ابتدا','تاول را نترکانید؛ استریل نگه دارید','لگن آب گرم با بابونه شب قبل خواب'] },
+  { cat:'پوستی', title:'خشکی پوست و اگزما', symptoms:'خارش، پوسته‌پوسته‌شدن', solutions:['کاهو، خرفه، خیار و عناب در غذا','روغن بادام‌شیرین یا بنفشه‌بادام موضعی','نوشیدن ماءالشعیر طبی'] },
+  { cat:'پوستی', title:'گزیدگی حشرات', symptoms:'خارش و التهاب محل گزش', solutions:['کرم حاوی نعنا یا شمعدانی','مالیدن کمی آبلیمو روی پوست بدون‌پوشش'] },
+  { cat:'پوستی', title:'عرق‌سوز', symptoms:'قرمزی و سوزش در چین‌های پوست', solutions:['کرم حاوی بابونه یا همیشه‌بهار','لباس نخی و گشاد بپوشید'] },
+  { cat:'تنفسی', title:'نزلهٔ گرم (ترشح رقیق)', symptoms:'آبریزش بینی، عطسه، خارش چشم', solutions:['سوپ جوی رقیق چند روز اول','پرهیز از ادویه گرم زیاد','غرغره با آب‌عدس'] },
+  { cat:'تنفسی', title:'نزلهٔ سرد (ترشح غلیظ)', symptoms:'گرفتگی بینی، سنگینی سر', solutions:['غذای گرم و سبک','بخور بابونه، آویشن و شوید','دمنوش گل‌گاوزبان با لیموعمانی'] },
+  { cat:'تنفسی', title:'گلودرد و سرفه', symptoms:'خشکی و سوزش گلو', solutions:['شربت به‌دانه هر دو ساعت یک‌بار','دمنوش گل ختمی و پنیرک','در صورت تب یا چرک گلو، مراجعه به پزشک'] },
+  { cat:'اورژانسی', title:'علائم هشدار وبا', symptoms:'استفراغ، مدفوع آبکی، عطش شدید', solutions:['فوراً مایعات فراوان بنوشید','بلافاصله به مراکز درمانی مراجعه کنید','از آب و غذای نامطمئن پرهیز کنید'] },
+  { cat:'اورژانسی', title:'علائم نیازمند پزشک', symptoms:'تب بالا، درد شدید، خونریزی', solutions:['خودسرانه دارو مصرف نکنید','به نزدیک‌ترین درمانگاه یا اورژانس مراجعه کنید'] },
+];
+
+const categories = ['همه', ...new Set(diseaseData.map(d=>d.cat))];
+const filterRow = document.getElementById('filterRow');
+let activeCat = 'همه';
+categories.forEach(cat=>{
+  const chip = document.createElement('button');
+  chip.className = 'chip' + (cat==='همه' ? ' active' : '');
+  chip.textContent = cat;
+  chip.addEventListener('click', ()=>{
+    activeCat = cat;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    renderDiseases();
+  });
+  filterRow.appendChild(chip);
+});
+
+const diseaseListEl = document.getElementById('diseaseList');
+const searchInput = document.getElementById('diseaseSearch');
+searchInput.addEventListener('input', renderDiseases);
+
+function renderDiseases(){
+  const q = searchInput.value.trim();
+  const filtered = diseaseData.filter(d=>{
+    const catOk = activeCat==='همه' || d.cat===activeCat;
+    const qOk = !q || d.title.includes(q) || d.symptoms.includes(q) || d.solutions.some(s=>s.includes(q));
+    return catOk && qOk;
+  });
+  diseaseListEl.innerHTML = '';
+  if(filtered.length===0){
+    diseaseListEl.innerHTML = '<div class="no-results">چیزی پیدا نشد؛ عبارت دیگری را امتحان کنید.</div>';
+    return;
+  }
+  filtered.forEach((d, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'disease-card';
+    card.innerHTML = `
+      <div class="disease-head">
+        <div class="disease-head-l"><span class="tag">${d.cat}</span><h4>${d.title}</h4></div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="disease-body"><div class="disease-body-in">
+        <div class="blk"><h5>🔎 علائم</h5><ul><li>${d.symptoms}</li></ul></div>
+        <div class="blk"><h5>💊 راهکار</h5><ul>${d.solutions.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+      </div></div>`;
+    card.querySelector('.disease-head').addEventListener('click', ()=> card.classList.toggle('open'));
+    diseaseListEl.appendChild(card);
+  });
+}
+renderDiseases();
+
+/* ============ Special groups tabs ============ */
+document.querySelectorAll('#groupTabs .tabbtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#groupTabs .tabbtn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.subpage').forEach(sp=> sp.classList.toggle('active', sp.id === 'sub-'+btn.dataset.sub));
+  });
+});
+</script>
+</body>
+</html>
